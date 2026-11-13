@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Matriz executável de permissões RLS (docs/DATABASE.md seção 7 e docs/TEST_STRATEGY.md seção 2)",
+  "tables": {
+    "app_config": {
+      "phase": 0,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "public_keys_only",
+        "insert": false,
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": true,
+        "insert": "service_role_only",
+        "update": "service_role_only",
+        "delete": false
+      }
+    },
+    "categories": {
+      "phase": 0,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": { "select": true, "insert": false, "update": false, "delete": false },
+      "admin": {
+        "select": true,
+        "insert": "edge_function",
+        "update": "edge_function",
+        "delete": false
+      }
+    },
+    "neighborhoods": {
+      "phase": 0,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "active_only",
+        "insert": false,
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": true,
+        "insert": "edge_function",
+        "update": "edge_function",
+        "delete": false
+      }
+    },
+    "status_events": {
+      "phase": 0,
+      "rls_required": true,
+      "append_only": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "participant_only",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": true,
+        "insert": "rpc_or_edge_function",
+        "update": false,
+        "delete": false
+      }
+    },
+    "account_deletion_log": {
+      "phase": 0,
+      "rls_required": true,
+      "append_only": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": { "select": false, "insert": false, "update": false, "delete": false },
+      "admin": { "select": true, "insert": "edge_function", "update": false, "delete": false }
+    },
+    "profiles": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_or_public_view",
+        "insert": "signup_trigger",
+        "update": "own_non_status_columns",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "admin_users": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": { "select": false, "insert": false, "update": false, "delete": false },
+      "admin": {
+        "select": "own_only",
+        "insert": "manual_sql_only",
+        "update": false,
+        "delete": "manual_sql_only"
+      }
+    },
+    "consent_records": {
+      "phase": 1,
+      "rls_required": true,
+      "append_only": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_only",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "provider_profiles": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_or_approved_view",
+        "insert": "own_only",
+        "update": "own_profile_columns",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "verification_submissions": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_without_reviewer_notes",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "provider_documents": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": false,
+        "insert": "edge_function",
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": "metadata_only",
+        "insert": false,
+        "update": "edge_function",
+        "delete": "cron_purge_only"
+      }
+    },
+    "provider_sensitive_data": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": { "select": false, "insert": false, "update": false, "delete": false },
+      "admin": {
+        "select": false,
+        "insert": "edge_function",
+        "update": "edge_function",
+        "delete": "edge_function"
+      }
+    },
+    "provider_categories": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_or_approved_view",
+        "insert": "own_only",
+        "update": "own_only",
+        "delete": "own_only"
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "provider_neighborhoods": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_or_approved_view",
+        "insert": "own_only",
+        "update": "own_only",
+        "delete": "own_only"
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "portfolio_items": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_or_approved_provider",
+        "insert": "own_only",
+        "update": "own_only",
+        "delete": "own_only"
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": "edge_function" }
+    },
+    "availability_rules": {
+      "phase": 1,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_only",
+        "insert": "own_only",
+        "update": "own_only",
+        "delete": "own_only"
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "service_requests": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "owner_or_matched_provider",
+        "insert": "rpc_only",
+        "update": "rpc_only",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "service_request_private": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "owner_or_hired_provider",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": "edge_function_with_report_only",
+        "insert": false,
+        "update": false,
+        "delete": false
+      }
+    },
+    "request_media": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "owner_or_active_matched_provider",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": "edge_function_with_report_only",
+        "insert": false,
+        "update": false,
+        "delete": "edge_function"
+      }
+    },
+    "request_matches": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "matched_provider_only",
+        "insert": "dispatch_only",
+        "update": "rpc_seen_or_dismissed",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "quotes": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "provider_owner_or_request_owner",
+        "insert": "rpc_only",
+        "update": "rpc_only",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "unserved_demand": {
+      "phase": 2,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": false,
+        "insert": "rpc_only",
+        "update": "rpc_only",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "conversations": {
+      "phase": 3,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "participant_only",
+        "insert": "rpc_only",
+        "update": "rpc_only",
+        "delete": false
+      },
+      "admin": {
+        "select": "edge_function_with_report_only",
+        "insert": false,
+        "update": "edge_function",
+        "delete": false
+      }
+    },
+    "messages": {
+      "phase": 3,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "participant_only",
+        "insert": "rpc_send_message_only",
+        "update": "rpc_mark_read_only",
+        "delete": false
+      },
+      "admin": {
+        "select": "edge_function_with_report_only",
+        "insert": false,
+        "update": "edge_function_redact",
+        "delete": false
+      }
+    },
+    "push_tokens": {
+      "phase": 3,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_only",
+        "insert": "rpc_only",
+        "update": "rpc_only",
+        "delete": "rpc_only"
+      },
+      "admin": { "select": false, "insert": false, "update": false, "delete": "edge_function" }
+    },
+    "notifications": {
+      "phase": 3,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "own_only",
+        "insert": false,
+        "update": "rpc_mark_read_only",
+        "delete": false
+      },
+      "admin": {
+        "select": false,
+        "insert": "service_role_only",
+        "update": false,
+        "delete": "cron_purge_only"
+      }
+    },
+    "jobs": {
+      "phase": 4,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "participant_only",
+        "insert": "rpc_accept_quote_only",
+        "update": "rpc_only",
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "reviews": {
+      "phase": 4,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "published_or_own_pending",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": {
+        "select": true,
+        "insert": false,
+        "update": "edge_function_remove",
+        "delete": false
+      }
+    },
+    "reports": {
+      "phase": 5,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "reporter_own_only",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": false
+      },
+      "admin": { "select": true, "insert": false, "update": "edge_function", "delete": false }
+    },
+    "user_blocks": {
+      "phase": 5,
+      "rls_required": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": {
+        "select": "blocker_own_only",
+        "insert": "rpc_only",
+        "update": false,
+        "delete": "rpc_only"
+      },
+      "admin": { "select": true, "insert": false, "update": false, "delete": false }
+    },
+    "admin_audit_log": {
+      "phase": 5,
+      "rls_required": true,
+      "append_only": true,
+      "anon": { "select": false, "insert": false, "update": false, "delete": false },
+      "authenticated": { "select": false, "insert": false, "update": false, "delete": false },
+      "admin": { "select": true, "insert": "edge_function_only", "update": false, "delete": false }
+    }
+  }
+}
